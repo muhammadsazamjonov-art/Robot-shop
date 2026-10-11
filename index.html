@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RoboShop — robotlar do'koni</title>
+<style>
+:root{--bg:#eef2f4;--card:#fff;--ink:#14232b;--mute:#5d6f78;--line:#d3dde2;--acc:#0f6b6b;--hot:#ffc400;--hotink:#14232b;--red:#d64545;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a20;--card:#17262e;--ink:#e8f0f3;--mute:#93a7b0;--line:#27393f;--acc:#3fc1b8}}
+:root[data-theme="dark"]{--bg:#0e1a20;--card:#17262e;--ink:#e8f0f3;--mute:#93a7b0;--line:#27393f;--acc:#3fc1b8}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center;padding:10px 14px}
+.logo{font:800 20px/1 "Trebuchet MS",sans-serif;letter-spacing:-.5px;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.logo img{height:30px;border-radius:6px}
+.logo b{background:var(--hot);color:var(--hotink);padding:2px 6px;border-radius:4px;margin-left:2px}
+input,select,textarea{padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit;width:100%}
+#q{flex:1;min-width:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.cartbtn{border:0;background:var(--ink);color:var(--bg);padding:10px 14px;border-radius:8px;font-weight:600;white-space:nowrap}
+.cartbtn span{background:var(--hot);color:var(--hotink);border-radius:99px;padding:0 7px;margin-left:6px;font-size:13px}
+.call{background:var(--acc);color:#fff;text-decoration:none;padding:10px 12px;border-radius:8px;font-weight:600;display:none}
+.hero{padding:28px 14px 8px;max-width:1100px;margin:auto}
+.hero h1{font:800 clamp(30px,7vw,52px)/1.05 "Trebuchet MS",sans-serif;margin:0 0 10px;letter-spacing:-1px;max-width:14ch}
+.hero p{margin:0;color:var(--mute);max-width:46ch}
+.bar{max-width:1100px;margin:auto;padding:14px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 14px;border-radius:99px}
+.chip[aria-pressed=true]{background:var(--acc);border-color:var(--acc);color:#fff}
+#sort{width:auto;margin-left:auto}
+.grid{max-width:1100px;margin:auto;padding:0 14px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.p{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.p .img{height:150px;display:grid;place-items:center;border-bottom:1px solid var(--line);background-size:cover;background-position:center}
+.p .b{padding:12px;display:flex;flex-direction:column;gap:6px;flex:1}
+.p h3{margin:0;font-size:17px}
+.p small{color:var(--mute)}
+.tag{font-size:12px;color:var(--acc);font-weight:700}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:8px}
+.price{font-weight:800;font-size:18px}
+.add{background:var(--hot);color:var(--hotink);border:0;padding:8px 12px;border-radius:8px;font-weight:700}
+.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:40px 0}
+aside{position:fixed;inset:0 0 0 auto;width:min(420px,100%);background:var(--card);border-left:1px solid var(--line);transform:translateX(100%);transition:transform .25s;z-index:10;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+aside.open{transform:none}
+@media(prefers-reduced-motion:reduce){aside{transition:none}}
+aside h2{margin:0;padding:14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-size:18px}
+#items{flex:1;overflow:auto;padding:8px 14px}
+.it{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.it .n{flex:1;font-weight:600}
+.it .n small{display:block;font-weight:400;color:var(--mute)}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:30px;height:30px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px}
+.foot{padding:14px;border-top:1px solid var(--line);display:grid;gap:8px;max-height:60vh;overflow:auto}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:20px}
+.sub{display:flex;justify-content:space-between;color:var(--mute);font-size:14px}
+.buy,.btn{background:var(--acc);color:#fff;border:0;padding:10px 14px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;text-align:center}
+.btn.o{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+.btn.r{background:var(--red)}
+.btn.s{padding:6px 10px;font-size:14px}
+.x{background:none;border:0;color:var(--ink);font-size:22px}
+.ok{padding:12px;background:var(--acc);color:#fff;border-radius:8px;display:none;gap:8px}
+.ok a{color:#fff}
+#shade{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:9}
+#shade.on{display:block}
+footer{text-align:center;color:var(--mute);padding:20px;border-top:1px solid var(--line);font-size:14px}
+footer a{color:var(--mute)}
+/* admin */
+#adm{display:none;max-width:1000px;margin:auto;padding:14px 14px 60px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;margin:14px 0}
+.box h2{margin:0 0 10px;font-size:20px}
+.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;align-items:end}
+.f label{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--mute)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.tabs button{border:1px solid var(--acc);background:transparent;color:var(--acc);padding:7px 14px;border-radius:8px;font-weight:600}
+.tabs button.on{background:var(--acc);color:#fff}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+td,th{padding:8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+td img{width:44px;height:44px;object-fit:cover;border-radius:8px}
+.msg{color:#b36b00;font-weight:600}
+.mut{color:var(--mute);font-size:14px}
+.login{max-width:420px;margin:40px auto}
+.ah{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ah h1{margin:0;font-size:22px}
+.done{opacity:.55}
+</style>
+</head>
+<body>
+<div id="shop">
+<header>
+  <div class="logo" id="lg"></div>
+  <input id="q" type="search" placeholder="Robot qidirish..." aria-label="Qidirish">
+  <a class="call" id="call" href="#">Qo'ng'iroq</a>
+  <button class="cartbtn" id="open" aria-label="Savatni ochish">Savat<span id="cnt">0</span></button>
+</header>
+<section class="hero">
+  <h1>Har bir vazifaga robot.</h1>
+  <p>Uy tozalash, o'qitish, yig'ish va o'ynash uchun robotlar. O'zbekiston bo'ylab yetkazib berish.</p>
+</section>
+<div class="bar">
+  <div id="cats" role="group" aria-label="Kategoriyalar" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+  <select id="sort" aria-label="Saralash"><option value="pop">Mashhur</option><option value="asc">Arzonroq</option><option value="desc">Qimmatroq</option></select>
+</div>
+<main class="grid" id="grid"></main>
+<footer>© 2026 RoboShop · Toshkent · <a href="#admin">Admin</a></footer>
+
+<div id="shade"></div>
+<aside id="cart" aria-label="Savat">
+  <h2>Savatingiz <button class="x" id="close" aria-label="Yopish">×</button></h2>
+  <div id="items"></div>
+  <div class="foot">
+    <div style="display:flex;gap:6px"><input id="pcode" placeholder="Promokod"><button class="btn o" id="papply">Qo'llash</button></div>
+    <div class="sub"><span>Chegirma</span><span id="disc">0 so'm</span></div>
+    <div class="tot"><span>Jami</span><span id="total">0 so'm</span></div>
+    <input id="name" placeholder="Ismingiz" autocomplete="name">
+    <input id="phone" placeholder="Telefon: +998..." inputmode="tel" autocomplete="tel">
+    <input id="addr" placeholder="Manzil" autocomplete="street-address">
+    <button class="buy" id="buy">Buyurtma berish</button>
+    <div class="ok" id="ok"></div>
+  </div>
+</aside>
+</div>
+
+<div id="adm"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const fmt=n=>Math.round(n).toLocaleString("ru-RU").replace(/,/g," ")+" so'm";
+const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+/* ---------- ma'lumot ---------- */
+const SEED=[
+ ["CleanBot X1","Uy",2890000,98,"Aqlli changyutgich robot, xarita tuzadi","#0f6b6b"],
+ ["MopMate Pro","Uy",3490000,90,"Changyutadi va polni yuvadi","#2a7fba"],
+ ["LawnGo 500","Uy",5900000,70,"Maysazor o'ruvchi robot","#5a9a3a"],
+ ["Kodi Mini","Ta'lim",690000,95,"Bolalar uchun dasturlash roboti, 6+ yosh","#e08a00"],
+ ["STEM Kit 120","Ta'lim",1250000,85,"120 detalli konstruktor, Arduino bilan","#8a4fd0"],
+ ["Talker Owl","Ta'lim",890000,80,"Ingliz tilini o'rgatuvchi robot","#c0392b"],
+ ["ArmBot M3","Sanoat",7800000,60,"3 o'qli robot qo'l, 500 g gacha yuk","#34495e"],
+ ["Carry AGV","Sanoat",12500000,55,"Omborxona uchun yuk tashuvchi","#16a085"],
+ ["Pet Buddy","O'yin",1450000,92,"Sezgir sensorli robot-it","#d35400"],
+ ["Battle Duo","O'yin",1790000,88,"Telefondan boshqariladigan jang robotlari","#7f3fbf"],
+ ["Sparky Mini","O'yin",390000,75,"Cho'ntak robot, raqs tushadi","#e84393"],
+ ["Guard Eye","Uy",2100000,82,"Uyni kuzatuvchi harakatlanuvchi kamera","#2c3e50"]
+].map((a,i)=>({id:i+1,code:"RB-"+String(i+1).padStart(2,"0"),n:a[0],c:a[1],pr:a[2],r:a[3],d:a[4],col:a[5],img:""}));
+const K="robo_data_v2",KC="robocart";
+let D={p:SEED,a:[],promo:[],o:[],tg:"",phone:"",card:"",holder:"",logo:""};
+try{const s=JSON.parse(localStorage.getItem(K)||"null");if(s)D=Object.assign(D,s)}catch(e){}
+const persist=()=>{try{localStorage.setItem(K,JSON.stringify(D));return true}catch(e){return false}};
+async function sha(s){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){let h=5381;for(const c of s)h=((h<<5)+h+c.charCodeAt(0))|0;return"f"+h}}
+const ready=(async()=>{if(!D.a.length){D.a.push({u:"ibrohim",h:await sha("ibrohim:2013")});persist()}})();
+
+/* ---------- do'kon ---------- */
+let cat="Hammasi",cart={},pct=0;
+try{cart=JSON.parse(localStorage.getItem(KC)||"{}")}catch(e){}
+const saveCart=()=>{try{localStorage.setItem(KC,JSON.stringify(cart))}catch(e){}};
+function robot(col){return `<svg width="110" height="110" viewBox="0 0 110 110" aria-hidden="true"><line x1="55" y1="8" x2="55" y2="22" stroke="${col}" stroke-width="4"/><circle cx="55" cy="8" r="5" fill="#ffc400"/><rect x="22" y="22" width="66" height="50" rx="12" fill="${col}"/><circle cx="40" cy="44" r="9" fill="#fff"/><circle cx="70" cy="44" r="9" fill="#fff"/><circle cx="40" cy="44" r="4" fill="#14232b"/><circle cx="70" cy="44" r="4" fill="#14232b"/><rect x="42" y="58" width="26" height="5" rx="2.5" fill="#fff" opacity=".8"/><rect x="30" y="78" width="50" height="24" rx="8" fill="${col}" opacity=".75"/><rect x="12" y="80" width="12" height="18" rx="5" fill="${col}"/><rect x="86" y="80" width="12" height="18" rx="5" fill="${col}"/></svg>`}
+function head(){
+  $("lg").innerHTML=(D.logo?`<img src="${esc(D.logo)}" alt="">`:"")+`Robo<b>Shop</b>`;
+  const c=$("call");c.style.display=D.phone?"inline-block":"none";if(D.phone)c.href="tel:"+D.phone;
+}
+function cats(){
+  const list=["Hammasi",...new Set(D.p.map(p=>p.c).filter(Boolean))];
+  if(!list.includes(cat))cat="Hammasi";
+  $("cats").innerHTML=list.map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+}
+function grid(){
+  const q=$("q").value.trim().toLowerCase(),s=$("sort").value;
+  let l=D.p.filter(p=>(cat==="Hammasi"||p.c===cat)&&(p.n+" "+p.d+" "+p.code).toLowerCase().includes(q));
+  l.sort((a,b)=>s==="asc"?a.pr-b.pr:s==="desc"?b.pr-a.pr:(b.r||0)-(a.r||0));
+  $("grid").innerHTML=l.length?l.map(p=>`<article class="p"><div class="img" style="${p.img?`background-image:url('${esc(p.img)}')`:`background:${esc(p.col||"#0f6b6b")}1f`}">${p.img?"":robot(p.col||"#0f6b6b")}</div>
+  <div class="b"><span class="tag">${esc(p.c)}</span><h3>${esc(p.n)}</h3><small>${esc(p.d)}</small>
+  <div class="row"><span class="price">${fmt(p.pr)}</span><button class="add" data-id="${p.id}">Savatga</button></div></div></article>`).join("")
+  :`<div class="empty">Hech narsa topilmadi. Boshqa so'z yoki kategoriya tanlang.</div>`;
+}
+function sums(){let s=0,n=0;for(const id in cart){const p=D.p.find(x=>x.id==id);if(p){s+=p.pr*cart[id];n+=cart[id]}}const d=Math.round(s*pct/100);return{s,n,d,t:s-d}}
+function draw(){
+  const ids=Object.keys(cart).filter(id=>D.p.some(p=>p.id==id));
+  $("items").innerHTML=ids.length?ids.map(id=>{const p=D.p.find(x=>x.id==id);
+   return `<div class="it"><div class="n">${esc(p.n)}<small>${fmt(p.pr)}</small></div><div class="qty"><button data-m="${id}" aria-label="Kamaytirish">−</button><b>${cart[id]}</b><button data-pl="${id}" aria-label="Ko'paytirish">+</button></div></div>`}).join("")
+   :`<p class="empty" style="padding:30px 0">Savat bo'sh. Mahsulot qo'shing.</p>`;
+  const m=sums();$("total").textContent=fmt(m.t);$("disc").textContent=m.d?"−"+fmt(m.d)+" ("+pct+"%)":fmt(0);$("cnt").textContent=m.n;saveCart();
+}
+function toggle(on){$("cart").classList.toggle("open",on);$("shade").classList.toggle("on",on)}
+$("cats").onclick=e=>{const c=e.target.dataset.c;if(c){cat=c;cats();grid()}};
+$("q").oninput=grid;$("sort").onchange=grid;
+$("grid").onclick=e=>{const id=e.target.dataset.id;if(id){cart[id]=(cart[id]||0)+1;draw();e.target.textContent="Qo'shildi ✓";setTimeout(()=>e.target.textContent="Savatga",900)}};
+$("items").onclick=e=>{const m=e.target.dataset.m,pl=e.target.dataset.pl;if(pl)cart[pl]++;if(m){cart[m]--;if(cart[m]<=0)delete cart[m]}draw()};
+$("open").onclick=()=>toggle(true);$("close").onclick=()=>toggle(false);$("shade").onclick=()=>toggle(false);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")toggle(false)});
+$("papply").onclick=()=>{const c=$("pcode").value.trim().toUpperCase(),f=D.promo.find(x=>String(x.c).toUpperCase()===c);
+  const ok=$("ok");ok.style.display="block";
+  if(f){pct=f.pct;ok.textContent="Promokod qo'llandi: −"+f.pct+"%"}else{pct=0;ok.textContent="Bunday promokod yo'q."}draw()};
+$("buy").onclick=()=>{
+  const ok=$("ok");ok.style.display="block";
+  const m=sums();
+  if(!m.n){ok.textContent="Avval savatga mahsulot qo'shing.";return}
+  const nm=$("name").value.trim(),ph=$("phone").value.replace(/[\s-]/g,""),ad=$("addr").value.trim();
+  if(!nm||!/^\+?\d{9,13}$/.test(ph)||!ad){ok.textContent="Ism, to'g'ri telefon raqam va manzilni kiriting.";return}
+  const no=Math.floor(100000+Math.random()*900000);
+  const items=Object.keys(cart).map(id=>{const p=D.p.find(x=>x.id==id);return p?{n:p.n,q:cart[id],pr:p.pr}:null}).filter(Boolean);
+  D.o.unshift({no,name:nm,phone:ph,addr:ad,items,total:m.t,pct,date:new Date().toLocaleString("ru-RU"),done:false});persist();
+  const txt=`Buyurtma №${no}\n${items.map(i=>i.n+" × "+i.q).join("\n")}\nJami: ${fmt(m.t)}\n${nm}, ${ph}\n${ad}`;
+  let html=`Buyurtma №${esc(no)} qabul qilindi.`;
+  if(D.card)html+=`<br>To'lov kartasi: <b>${esc(D.card.replace(/(\d{4})(?=\d)/g,"$1 "))}</b>${D.holder?" ("+esc(D.holder)+")":""}`;
+  if(D.tg)html+=`<br><a href="https://t.me/${encodeURIComponent(D.tg)}?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener">Telegramda yuborish</a>`;
+  cart={};pct=0;$("pcode").value="";draw();ok.innerHTML=html;
+};
+
+/* ---------- admin ---------- */
+const A=$("adm");
+let sess=null;try{sess=sessionStorage.getItem("ru")}catch(e){}
+const setSess=u=>{sess=u;try{u?sessionStorage.setItem("ru",u):sessionStorage.removeItem("ru")}catch(e){}};
+let tab="p",edit=-1,note="";
+const isAdmin=()=>sess&&D.a.some(x=>x.u===sess);
+function readImg(f,max,type){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k)||1;c.height=Math.round(im.height*k)||1;c.getContext("2d").drawImage(im,0,0,c.width,c.height);res(c.toDataURL(type,.8))};im.onerror=rej;im.src=URL.createObjectURL(f)})}
+const V=id=>$(id)?$(id).value.trim():"";
+function flash(m){note=m;shopAll();adminDraw()}
+function adminDraw(){
+  let h=`<div class="ah"><h1>RoboShop — Admin</h1><a class="btn o s" href="#">Do'konga qaytish</a></div>`;
+  if(note)h+=`<p class="msg">${esc(note)}</p>`;
+  if(!isAdmin()){
+    h+=`<div class="box login"><h2>Kirish</h2><div class="f" style="grid-template-columns:1fr"><label>Login<input id="lu" autocomplete="username"></label><label>Parol<input id="lp" type="password" autocomplete="current-password"></label></div><p><button class="btn" data-a="login">Kirish</button></p></div>`;
+  }else{
+    const T=[["p","Mahsulotlar"],["o","Buyurtmalar"],["a","Adminlar"],["m","Promokodlar"],["s","Sozlamalar"]];
+    h+=`<p>Kirdingiz: <b>${esc(sess)}</b> <button class="btn o s" data-a="logout">Chiqish</button></p><div class="tabs">${T.map(t=>`<button data-a="tab" data-v="${t[0]}"${tab===t[0]?' class="on"':""}>${t[1]}${t[0]==="o"&&D.o.some(o=>!o.done)?" ("+D.o.filter(o=>!o.done).length+")":""}</button>`).join("")}</div>`;
+    if(tab==="p"){
+      const e=edit>=0?D.p[edit]:{n:"",c:"",d:"",pr:"",code:"",img:""};
+      h+=`<div class="box"><h2>${edit>=0?"Mahsulotni tahrirlash":"Yangi mahsulot"}</h2><div class="f"><label>Nomi<input id="fn" value="${esc(e.n)}"></label><label>Kodi<input id="fc" value="${esc(e.code)}"></label><label>Narxi (so'm)<input id="fp" type="number" min="0" value="${esc(e.pr)}"></label><label>Kategoriya<input id="fk" list="cl" value="${esc(e.c)}"><datalist id="cl">${[...new Set(D.p.map(p=>p.c))].map(c=>`<option value="${esc(c)}">`).join("")}</datalist></label><label>Tavsif<input id="fd" value="${esc(e.d)}"></label><label>Rasm<input id="fi" type="file" accept="image/*"></label></div><p><button class="btn" data-a="psave">Saqlash</button> ${edit>=0?'<button class="btn o" data-a="pcancel">Bekor qilish</button>':""}</p></div>`;
+      h+=`<div class="box tw"><table><tr><th>Rasm</th><th>Kod</th><th>Nomi</th><th>Narx</th><th></th></tr>${D.p.map((p,i)=>`<tr><td>${p.img?`<img src="${esc(p.img)}" alt="">`:"—"}</td><td>${esc(p.code)}</td><td>${esc(p.n)}</td><td>${fmt(p.pr)}</td><td><button class="btn s" data-a="pedit" data-i="${i}">Tahrir</button> <button class="btn r s" data-a="pdel" data-i="${i}">O'chirish</button></td></tr>`).join("")}</table></div>`;
+    }else if(tab==="o"){
+      h+=`<div class="box tw"><h2>Buyurtmalar</h2>${D.o.length?`<table><tr><th>№</th><th>Sana</th><th>Mijoz</th><th>Telefon</th><th>Manzil</th><th>Mahsulotlar</th><th>Jami</th><th></th></tr>${D.o.map((o,i)=>`<tr class="${o.done?"done":""}"><td>${esc(o.no)}</td><td>${esc(o.date)}</td><td>${esc(o.name)}</td><td><a href="tel:${esc(o.phone)}">${esc(o.phone)}</a></td><td>${esc(o.addr)}</td><td>${o.items.map(x=>esc(x.n)+" ×"+x.q).join(", ")}</td><td>${fmt(o.total)}</td><td><button class="btn o s" data-a="odone" data-i="${i}">${o.done?"Qaytarish":"Bajarildi"}</button> <button class="btn r s" data-a="odel" data-i="${i}">O'chirish</button></td></tr>`).join("")}</table>`:`<p class="mut">Hozircha buyurtma yo'q.</p>`}</div>`;
+    }else if(tab==="a"){
+      h+=`<div class="box"><h2>Yangi admin</h2><div class="f"><label>Login<input id="nu"></label><label>Parol (kamida 6 belgi)<input id="np" type="password"></label></div><p><button class="btn" data-a="aadd">Admin qo'shish</button></p></div><div class="box"><h2>Adminlar</h2>${D.a.map((x,i)=>`<p>${esc(x.u)}${x.u===sess?" (siz)":` <button class="btn r s" data-a="adel" data-i="${i}">O'chirish</button>`}</p>`).join("")}</div>`;
+    }else if(tab==="m"){
+      h+=`<div class="box"><h2>Yangi promokod</h2><div class="f"><label>Kod<input id="pc" placeholder="ROBOT10"></label><label>Chegirma (%)<input id="pp" type="number" min="1" max="90" placeholder="10"></label></div><p><button class="btn" data-a="padd">Qo'shish</button></p></div><div class="box tw"><h2>Promokodlar</h2>${D.promo.length?`<table><tr><th>Kod</th><th>Chegirma</th><th></th></tr>${D.promo.map((x,i)=>`<tr><td>${esc(x.c)}</td><td>${esc(x.pct)}%</td><td><button class="btn r s" data-a="pdl" data-i="${i}">O'chirish</button></td></tr>`).join("")}</table>`:`<p class="mut">Hozircha promokod yo'q.</p>`}</div>`;
+    }else{
+      h+=`<div class="box"><h2>Sozlamalar</h2><div class="f"><label>Telegram nomi (buyurtmalar shu yerga yuboriladi)<input id="tg" value="${esc(D.tg)}"></label><label>Telefon raqam (qo'ng'iroq tugmasi uchun)<input id="ph" placeholder="+998901234567" value="${esc(D.phone)}"></label><label>Karta raqami<input id="cd" placeholder="8600 0000 0000 0000" value="${esc(D.card)}"></label><label>Karta egasi<input id="ch" value="${esc(D.holder)}"></label><label>Sayt logotipi (rasm)<input id="lf" type="file" accept="image/*"></label></div><p>${D.logo?`<img src="${esc(D.logo)}" alt="" style="height:48px;vertical-align:middle;margin-right:10px;border-radius:8px"><button class="btn r s" data-a="lrem">Logotipni o'chirish</button> `:""}<button class="btn" data-a="ssave">Saqlash</button></p></div>`;
+    }
+  }
+  A.innerHTML=h;
+}
+A.onclick=async e=>{
+  const t=e.target.closest("[data-a]");if(!t)return;
+  const a=t.dataset.a,i=+t.dataset.i;note="";
+  if(a==="login"){await ready;const u=V("lu"),h=await sha(u+":"+$("lp").value);
+    if(D.a.some(x=>x.u===u&&x.h===h)){setSess(u);adminDraw()}else flash("Login yoki parol noto'g'ri.");return}
+  if(!isAdmin())return;
+  if(a==="logout"){setSess(null);return adminDraw()}
+  if(a==="tab"){tab=t.dataset.v;edit=-1;return adminDraw()}
+  if(a==="pedit"){edit=i;return adminDraw()}
+  if(a==="pcancel"){edit=-1;return adminDraw()}
+  if(a==="pdel"){if(confirm("O'chirilsinmi?")){D.p.splice(i,1);edit=-1;persist();flash("Mahsulot o'chirildi.")}return}
+  if(a==="psave"){
+    const n=V("fn"),pr=+V("fp");if(!n||!(pr>=0)||V("fp")===""){return flash("Nomi va narxini kiriting.")}
+    const o=edit>=0?D.p[edit]:{id:Date.now(),col:"#0f6b6b",r:50,img:""};
+    Object.assign(o,{n,code:V("fc")||"RB-"+(D.p.length+1),pr,c:V("fk")||"Boshqa",d:V("fd")});
+    const f=$("fi").files[0];
+    if(f){try{o.img=await readImg(f,500,"image/jpeg")}catch(x){return flash("Rasm o'qilmadi.")}}
+    if(edit<0)D.p.push(o);edit=-1;
+    return flash(persist()?"Mahsulot saqlandi.":"Saqlanmadi: xotira to'lgan, rasm kichikroq bo'lsin.")}
+  if(a==="odone"){D.o[i].done=!D.o[i].done;persist();return adminDraw()}
+  if(a==="odel"){if(confirm("Buyurtma o'chirilsinmi?")){D.o.splice(i,1);persist();adminDraw()}return}
+  if(a==="aadd"){const u=V("nu"),p=$("np").value;
+    if(!u||p.length<6||D.a.some(x=>x.u===u))return flash("Login bo'sh yoki band, yoki parol 6 belgidan qisqa.");
+    D.a.push({u,h:await sha(u+":"+p)});persist();return flash("Admin qo'shildi.")}
+  if(a==="adel"){if(D.a.length>1&&confirm("Admin o'chirilsinmi?")){D.a.splice(i,1);persist();flash("Admin o'chirildi.")}return}
+  if(a==="padd"){const c=V("pc").toUpperCase(),p=Math.round(+V("pp"));
+    if(!c||!(p>=1&&p<=90))return flash("Kod va chegirma (1–90%) kerak.");
+    D.promo=D.promo.filter(x=>String(x.c).toUpperCase()!==c);D.promo.push({c,pct:p});persist();return flash("Promokod qo'shildi.")}
+  if(a==="pdl"){D.promo.splice(i,1);persist();return flash("Promokod o'chirildi.")}
+  if(a==="ssave"){D.tg=V("tg").replace("@","");D.phone=V("ph").replace(/[^\d+]/g,"");D.card=V("cd").replace(/\D/g,"");D.holder=V("ch");
+    const f=$("lf").files[0];if(f){try{D.logo=await readImg(f,160,"image/png")}catch(x){return flash("Rasm o'qilmadi.")}}
+    persist();return flash(f?"Logotip va sozlamalar saqlandi.":"Sozlamalar saqlandi.")}
+  if(a==="lrem"){D.logo="";persist();return flash("Logotip o'chirildi.")}
+};
+function shopAll(){head();cats();grid();draw()}
+
+/* ---------- marshrut ---------- */
+function route(){
+  const on=location.hash==="#admin";
+  $("shop").style.display=on?"none":"block";A.style.display=on?"block":"none";
+  if(on)adminDraw();else shopAll();
+  window.scrollTo(0,0);
+}
+addEventListener("hashchange",route);
+route();
+</script>
+</body>
+</html>
